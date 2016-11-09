@@ -2,10 +2,7 @@
 <html>
 
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="D3 hw4 1 : ">
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
     <title>D3 hw4 1</title>
 </head>
 
@@ -13,162 +10,159 @@
     <!-- HEADER -->
     <!-- MAIN CONTENT -->
     <h3>
-<hr>一、建立簡單動態圖表 </h3>
- 
-   
+2016年8月1日台北市發票金額>10億元</h3>
     <p>
-      
-       <input type="button" value="new" onclick="update()">
-       <svg width="100000" height="920"></svg>
-        
-<script>
-    var h=300;
-    var w=700;
-    var p=50;
-    var arr=[45,76,96,35,88,69]
-    svg(w,h,p);
-    bind(arr);
-    render(w,h,p);
-    bind2(arr);
-    render2(w,h,p);
-    
-    function svg(w,h,p){
-        d3.select("body").append("svg").attr({
-            width: w,
-            height: h
-        })
-    }
-   
-    function bind(data){
-      var selection = d3.select("svg")
-               .selectAll("rect")
-               .data(data);
-        selection.enter().append("rect");
-        selection.exit().remove();
-
-}
-    function update(){
-        var num = random(20,100)
-        arr.push(num)
-        bind(arr);
-        render(w,h,p);
-        bind2(arr);
-        render2(w,h,p);
-    }
-    function render(w,h,p){
-            d3.selectAll("rect").attr({
-                x:function(d,i){return p+45*i;},
-                y:function(d){return h-p-d;},
-                width:40,
-                height:function(d){return d;},
-                fill:function(d){
-                    if(d<70){return "red";
-                            }
-                    else{
-                        return "lightgreen";
-                    }
-                    
-                },
-              
-            })
-
-}
-    
-     function bind2(data){
-      var selection = d3.select("svg")
-               .selectAll("text")
-               .data(data);
-        selection.enter().append("text");
-        selection.exit().remove();
-
-}
-    
-    function render2(w,h,p){
-            d3.selectAll("text").attr({
-                x:function(d,i){return p+5+46*i;},
-                y:function(d){return h-p+20;},
-                fill:"blacl"
-                    }).text(function(d){return d;
-              
-            })
-
-}
-     function random(n,m){return Math.ceil(Math.random()*(m-n)+n);}
-    
-    </script>
- 
-    </p>
-    <p>
-   
-       
-         <script>
-    
+        <svg id=invoice width="1000" height="400"></svg>
+        <script>
             d3.json("invoice-taipei.json", function (dataSet) {
-                var body = d3.select("svg");
+                var body = d3.select("#invoice");
                 var count = 0;
-                body.append("text").attr({
-                            x: 20,
-                            y: 450 + 32 * count,
-                            "font-size": 20
-                        }).text("二、2016年8月1日台北市發票金額>10億");
-                body.append("text").attr({
-                            x: 20,
-                            y: 900 + 32 * count,
-                            "font-size": 20
-                        }).text("三、把數字小於70改成紅色");
                 for (var i = 0; i < dataSet.length; i++) {
                     if (dataSet[i].date === "2016/8/1" && dataSet[i].cid === "A" && parseInt(dataSet[i].amount) > 1000000000) {
                         body.append("rect").attr({
                             x: 350,
-                            y: 500 + 32 * count,
+                            y: 20 + 32 * count,
                             width: dataSet[i].amount / 100000000,
-                            height: 10,
-                            fill: "red"
+                            height: 12,
+                            fill: "#ce00ff"
                         });
                         body.append("text").attr({
                             x: 20,
-                            y: 500 + 32 * count,
+                            y: 32 + 32 * count,
                             "font-size": 18
                         }).text(dataSet[i].industry);
                         count = count + 1;
                     }
                 }
             });
-             
-             
-             
-             
-               var arr = [85, 60, 99, 49, 77, 82];
+        </script>
+    </p>
+    <h3>
+把數字小於70改成紅色</h3>
+    <div id=grade height="800" width="600" style="color:black;"></div>
+    <script>
+        var arr = [85, 60, 99, 49, 77, 82];
+        bind(arr);
+        render();
+
+        function bind(data) {
+            var selection = d3.select("body").selectAll("div").data(data);
+            selection.enter().append("div");
+            selection.exit().remove();
+        }
+
+        function render() {
+            d3.selectAll("div").text(function (d, i) {
+                return i + ":" + d;
+            })
+        };
+        d3.selectAll("div").style({
+            color: function (d) {
+                if (d < 70) {
+                    return "red";
+                } else {
+                    return "black";
+                }
+            }
+        });
+    </script>
+    <h3>建立簡單動態圖表</h3>
+    <input type="button" onclick="updata()" value="Add">
+    <input type="button" onclick="dropdata()" value="Minus">
+    <p>
+        <svg id=rectangle height="400" width="1000"></svg>
+        <script>
+            var h = 400;
+            var w = 700;
+            var p = 50;
+            var arr = [45, 76, 96, 35, 88, 69]
+            svg(w, h, p);
             bind(arr);
-            render();
+            render(w, h, p);
+            bind2(arr);
+            render2(w, h, p);
+
+            function svg(w, h, p) {
+                d3.select("body").append("svg").attr({
+                    width: w,
+                    height: h
+                })
+            }
 
             function bind(data) {
-                var selection = d3.select("body").selectAll("div").data(data);
-                selection.enter().append("div");
+                var selection = d3.select("#rectangle").selectAll("rect").data(data);
+                selection.enter().append("rect");
                 selection.exit().remove();
             }
 
-            function render() {
-                d3.selectAll("div").text(function (d, i) {
-                    return i + "," + d;
+            function render(w, h, p) {
+                d3.selectAll("#rectangle rect").attr({
+                    x: function (d, i) {
+                        return p + 45 * i;
+                    },
+                    y: function (d) {
+                        return h - p - d;
+                    },
+                    width: 40,
+                    height: function (d) {
+                        return d;
+                    },
+                    fill: function (d) {
+                        if (d < 70) {
+                            return "red";
+                        } else {
+                            return "yellow";
+                        }
+                    },
                 })
-            };
-            d3.selectAll("div").style({
-                color: function (d) {
-                    if (d < 70) {
-                        return "red";
-                    } else {
-                        return "black";
-                    }
-                }
-            });
-        </script>
-        
-    </p>
-  
-    
-   </body>
+            }
 
-    
-     
+            function bind2(data) {
+                var selection = d3.select("#rectangle").selectAll("text").data(data);
+                selection.enter().append("text");
+                selection.exit().remove();
+            }
+
+            function render2(w, h, p) {
+                d3.selectAll("#rectangle text").attr({
+                    x: function (d, i) {
+                        return 12 + p + 45 * i;
+                    },
+                    y: function (d) {
+                        return h - p + 20;
+                    },
+                    fill: "black",
+                }).text(function (d) {
+                    return d;
+                })
+            }
+        </script>
+        <script>
+            var random = function (n, m) {
+                return Math.ceil(Math.random() * (m - n) + n)
+            };
+
+            function updata() {
+                var num = random(10, 100)
+                arr.push(num);
+                console.log(arr);
+                bind(arr);
+                render(w, h, p);
+                bind2(arr);
+                render2(w, h, p);
+            }
+
+            function dropdata() {
+                var num = random(10, 100)
+                arr.pop(num);
+                console.log(arr);
+                bind(arr);
+                render(w, h, p);
+                bind2(arr);
+                render2(w, h, p);
+            }
+        </script>
+    </p>
+</body>
+
 </html>
